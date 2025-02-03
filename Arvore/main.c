@@ -193,7 +193,7 @@ int balanceada(Arvore*a){
         else{
             int he = altura(a->esquerda);
             int hd = altura(a->direita);
-            if(he - hd == 1 || he - hd == -1 || he - hd == 0){
+            if(abs(he - hd)){
                 return 1;
             }
             else{
@@ -212,4 +212,24 @@ int cheia2(Arvore*a){
         return cheia2(a->esquerda) && cheia2(a->direita);
 
     return 0;   // entra no caso se dele ter apenas um filho
+}
+
+Arvore *Destruir (Arvore*a){
+    if(a!=NULL){
+        a->esquerda = Destruir(a->esquerda);
+        a->direita = Destruir(a->direita);
+        free(a);
+    }
+    return NULL;
+}
+
+void imprimirlargura(Arvore *a){
+    if(a!= NULL){
+        int i;
+        int h = altura(a);
+        for(i = 0; i < h; i++){
+            ImprimirNivel(a,0,i);
+            printf("\n");
+        }
+    }
 }
