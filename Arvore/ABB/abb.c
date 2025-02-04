@@ -83,11 +83,44 @@ Arvore *Inserir(Arvore *a, int x){
 // 2-> no a ser removido possui 1 filho nulo    --> encontra o no, junta o filho nao nulo ao pai e remove
 // 3 -> no nao possui filhos nulos  -> encontra o no, encontra o maior elemento y da subarvore da esquerda, substitui x por y, remove y da subarvore da esquerda de x
 
-Arvore *Remover(Arvore*a, int x){
-    if(a == NULL)
-        return -1;  // nao ha o que remover
-    else if()
+/*
+Arvore* Remover(Arvore* a, int x){
+    if(a!= NULL){
+        if(a->info == x){
+            // primeiro caso:
+            if(a->esquerda == NULL && a->direita == NULL){
+                free(a);
+                return NULL;
+            }
+            // segundo caso
+            else if(a->esquerda == NULL){
+                Arvore *aux = a->esquerda;
+                free(a);
+                return aux;
+            }
+            else if(a->direita == NULL){
+                Arvore *aux = a->direita;
+                free(a);
+                return aux;
+            }
+            else{   // terceiro caso
+                Arvore *aux = a->esquerda;
+                while(aux -> direita != NULL){  // subarvore da esquerda, pra achar o maior
+                    aux = aux ->direita;
+                }
+                a->info = aux->info;        // atribuicao de valor, pra tirar depois
+                a -> esquerda = Remover(a->esquerda, aux->info);    // tirou
+            }
+            else if ( x < a->info)
+                a-> esquerda = Remover(a->esquerda, x);
+            else
+                a->direita = Remover(a->direita, x);
+            return a;
+        }
+    }
 }
+*/
+
 
 int altura(Arvore*a){
     if(a == NULL)
@@ -132,15 +165,30 @@ Arvore * Inserir2(Arvore*a, int x){
     return a;
 }
 
-void Imprimirmenorque(Arvore*a, int x){
+void Imprimirfolhasmenores(Arvore*a, int x){
+    if(a!= NULL){
+        if(a->info < x){
+            if(a->esquerda == NULL && a->direita == NULL){
+                printf("%d", a->info);
+                Imprimirfolhasmenores(a->esquerda, x);
+                Imprimirfolhasmenores(a->direita,x);
+            }
+        }
+        else
+            Imprimirfolhasmenores(a->esquerda, x);
+    }
+}
+
+
+int nivelno(Arvore*a, int x){   
     if(a != NULL){
-        if(a -> info < x){
-            printf("%d", a->info);
-            Imprimirmenorque(a->esquerda, x);    
-            Imprimirmenorque(a->direita, x);
+        if(a -> info == x)
+            return 0;
+        else if( x < a -> info){
+            return nivelno(a->esquerda, x) + 1;
         }
         else{
-            Imprimirmenorque(a->esquerda, x);
-        }   
-    }
+            return nivelno(a->direita, x) + 1;
+        }
+    }   
 }
