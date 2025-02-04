@@ -192,3 +192,11 @@ int nivelno(Arvore*a, int x){
         }
     }   
 }
+
+// para garantir que seja uma ABB, temos que garantir que cada no:
+// valores da subarvore da esquerda sejam menores que o no
+// subarvore da direita seja maior que o no
+// tem que valer para todos os nos da arvore
+
+
+
