@@ -110,6 +110,7 @@ void imprimir_folhas(arvore *a)
         if(a->esquerda == NULL && a->direita == NULL)
             printf("%d ", a->info);
     }
+    return imprimir_folhas(a->direita) || imprimir_folhas(a->esquerda);
 }
 
 int main()
