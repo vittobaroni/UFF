@@ -1,235 +1,197 @@
-// Árvore geral --> nao linear, hierarquia e sem ciclos
-// Muito importante para dar velocidade ao sistema
+/* Implemente um programa que apresente na telaw o seguinte menu de opções
 
-// cada elemento é o nó da arvore
-// o no inicial é a raiz
-// nos que possuem ambos os filhos NULOS sao folhas
-// nos que nao sao folhas sao nos internos
-
-// raiz ocupa o nivel 0
-// a altura de uma arvore pode ser definida pela Quantidade de niveis de uma arvore ou a distancia (numero de nos no caminho)
-// entre a raiz e a folha mais distantes
-
+1- Ler uma árvore de um arquivo fornecido pelo usuário
+2- Imprimir a árvore (pré-ordem, em-ordem, pós-ordem)
+3- Verificar se um elemento x existe na árvore
+4- Contar o número de elementos na árvore
+5- Imprimir os nós folhas da árvore
+6- Sair
+*/
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
-// estrutura de uma árvore
+//estrutura da árvore
 
-typedef struct arvore{
+typedef struct Arvore{
     int info;
-    struct arvore *esquerda;
-    struct arvore *direita;
-} Arvore;
+    struct Arvore* direita;
+    struct Arvore* esquerda;
+} arvore;
 
-// vamos quebrar a arvore em tres grandes componentes : Raiz, Subarvore esquerda e Subarvore esquerda
+// Função para ler uma árvore de um arquivo 
 
-// Assim como listas, NULL é uma condição de parada tradicional
-// Analisar a raiz --> depois analisar as subarvores da esquerda e direita
+arvore *LerArvore(FILE*arq)
+{
+    char c;
+    int num;
 
-void imprimir(Arvore *a){
-    if(a !=NULL) {
-        printf("%d", a->info);
-        imprimir(a -> esquerda);
-        imprimir(a->direita);
+    fscanf(arq,"%c",&c);    // ler '('
+    fscanf(arq,"%d",&num);  // ler numero
+
+    if(num == -1){      // se for null, vai colocar ')'
+        fscanf(arq,"%c",&c);
+        return NULL;
+    }
+    else {
+        arvore *a =(arvore*)malloc(sizeof(arvore));
+        a -> info = num;
+        a->esquerda = LerArvore(arq);
+        a->direita = LerArvore(arq);
+        fscanf(arq,"%c",&c);    // ler ')'
+        return a;
     }
 }
 
- // impressao em largura (por niveis)
 
-int existe(Arvore *a, int x){
-    if(a == NULL){
-        return 0;
-    }
-    else{
-        if(a -> info == x)
-            return 1;
-        if(existe(a->esquerda, x) == x)
-            return 1;
-        if(existe(a->direita, x) == x)
-            return 1;
+// Imprimir a árvore
 
-        return 0;
-    }
-}
-
-// precisamos primeiro de uma arvore na memoria !!
-// notacao de identificacao da arvore
-// Bota a raiz, sub esquerda, sub direita e (-1) pra arvore nula
-
-
-void preorder(Arvore*a){
+ void preordem(arvore*a)
+ {
     if(a!=NULL){
-        printf("%d",a->info);
-        preorder(a->esquerda);
-        preorder(a->direita);
+        printf("%d ",a->info);
+        preordem(a->esquerda);
+        preordem(a->direita);
     }
-}
+ }
 
-void inorder(Arvore*a){
-    if(a!= NULL){
-        inorder(a->esquerda);
-        printf("%d",a->info);
-        inorder(a->direita);
+ void emordem(arvore*a)
+ {
+    if(a!=NULL){
+        emordem(a->esquerda);
+        printf("%d ",a->info);
+        emordem(a->direita);
     }
-}
+ }
 
-void posordem(Arvore*a){
+ void posordem(arvore *a)
+ {
     if(a!=NULL){
         posordem(a->esquerda);
         posordem(a->direita);
         printf("%d",a->info);
     }
-}
+ }
 
-int existe2(Arvore*a, int x){   // recursao == caso base + resto
-    if(a == NULL)
+
+
+// verificar se um elemento x existe na lista
+
+int existe(arvore *a, int x)
+{
+    if(a == NULL){  // raiz é nula ?
         return 0;
+    }
     else{
-        if(a->info == x)
+        if(a->info == x){
             return 1;
-        if(a->esquerda == x)
-            return 1;
-        if(a->direita == x)
-            return 1;
-        
-        return 0;
-    }
-}
-
-int contar(Arvore*a){
-    if(a == NULL){
-        return 0;
-    }
-    return 1 + contar(a->esquerda) + contar(a->direita);
-}
-
-// imprimir nos folhas da arvore
-
-void Folhas(Arvore*a){
-    if(a == NULL);
-        return NULL;    // caso base, nao ha arvore
-    if(a-> esquerda == NULL && a->direita == NULL){
-        return 1;
-    }
-    Folhas(a->esquerda);
-    Folhas(a->direita);
-}
-
-int altura (Arvore*a){
-    if(a == NULL)
-        return 0;
-    else{
-        int he = altura(a->esquerda);
-        int hd = altura(a->direita);
-        if(he > hd)
-            return he + 1;  // +1, para incluir a raiz
-        else
-            return hd + 1;
-    }
-}
-
-void imprimirnivel(Arvore*a, int cont, int nivel){
-    if(a != NULL){  // caso base
-        if(cont == nivel)   // se onde começou é engal o nivel
-            printf("%d",a->info);
-
+        }
         else{
-            imprimirnivel(a->esquerda, cont + 1,nivel);
-            imprimirnivel(a->direita, cont + 1, nivel);
+            return existe(a->esquerda,x) || existe(a->direita, x);
         }
     }
 }
 
-int contnivel(Arvore *a, int cont, int nivel){
+//contar o numero de elementos na arvore
+
+int contar(arvore*a)
+{
     if(a == NULL){
-        return 0;   // nada para contar
-    }
-    if( cont == nivel){
-        return 1;
-    }
-    return(a->esquerda, cont + 1, nivel) + contnivel(a->direita, cont + 1, nivel);
-}
-
-// arvore cheia == arvore que possui todos os nós em todos os seus niveis
-
-// estrategia -> contar numero total de nos e verifiar se é igual a 2 elevado a h -1, onde h é a altura
-// estrategia 2 --> contar apenas o numero de nos no ultimo nivel da arvore( nivel h -1 ) e verificar se é igual a 2 elevado a h -1
-
-int cheia(Arvore*a, int cont, int nivel){
-    if(a == NULL){
-        return 1;   // arvore vazia é cheia
+        return 0;
     }
     else{
-        int x = contnivel(a,cont, altura(a)- 1);
-        if(x == pow(x, altura(a)-1)){
-            return 1;
-        }
-        else{
-            return 0;
-        }
+        return 1 + contar(a->esquerda) + contar(a->direita);
     }
 }
 
-// arvore completa == todos os niveis estao completos ou se apenas o ultimo estiver incompleto
-// no caso, veja se o penultimo nivel é igual a 2 elevado a H, sendo h a altura
-// ex : nivel 3 precisa ter 8 nos, pois 2³ é 8
-
-// ordenação --> dizemos qu eesta ordenada se todos os nos a esquerda ssao menores que a raiz
-// e tudo que está maior está a direita
-
-
-
-// dizemos que uma árvore binaria está balanceada se para todo nó x, as altiras das subárvores esquerda
-// e direita diferem de no maximo uma unidade
-
-int balanceada(Arvore*a){
-    if(a == NULL){  // caso base
-        return 1;
+void imprimir_folhas(arvore *a)
+{
+    while(a!=NULL){   // uma arvore vazia é considerado uma folha ?
+        if(a->esquerda == NULL && a->direita == NULL)
+            printf("%d ", a->info);
     }
-    else{
-        if(balanceada(a->esquerda) == 0 || balanceada(a->direita) == 0)
-            return 0;
-        else{
-            int he = altura(a->esquerda);
-            int hd = altura(a->direita);
-            if(abs(he - hd)){
-                return 1;
+}
+
+int main()
+{
+    int escolha;
+    int escolha_ordem;
+    arvore *a = NULL;
+
+    while(escolha!=6)
+    {
+        printf("\nBem vindo ao Menu . Qual opcao deseja escolher ?\n\n");
+        printf("1- Ler uma arvore de um arquivo fornecido pelo usuario\n");
+        printf("2- Imprimir arvore (pre-ordem, em-ordem, pos-ordem)\n");
+        printf("3- Verificar se um elemento x existe na arvore\n");
+        printf("4- Contar o numero de elementos na arvore\n");
+        printf("5- Imprimir os nos folhas da arvore\n");
+        printf("6- Sair\n\n");
+        scanf("\n%d",&escolha);
+        switch(escolha){
+
+            case 1: {
+                FILE *arq = fopen("arq.txt", "rt");
+                if (arq == NULL) {
+                    printf("Erro ao abrir o arquivo.\n");
+                } else {
+                    a = LerArvore(arq);
+                    fclose(arq);
+                    if (a != NULL) {
+                        printf("\nArvore lida com sucesso!\n");
+                    } else {
+                        printf("\nErro: arvore vazia ou mal formatada.\n");
+                    }
+                }
+                break;
             }
-            else{
-                return 0;
+            case 2:
+                while(escolha_ordem != 4){
+                printf("como deseja fazer?\n\n");
+                printf("1- pre-ordem\n");
+                printf("2- em-ordem\n");
+                printf("3- pos-ordem\n");
+                printf("4- voltar ao menu\n\n");
+                scanf("%d",&escolha_ordem);
+                    switch(escolha_ordem){
+                        case 1:
+                            printf("Pre-ordem: ");
+                            preordem(a);
+                            break;
+                        case 2:
+                            printf("Em-ordem: ");
+                            emordem(a);
+                            break;
+                        case 3:
+                            printf("pos-ordem: ");
+                            posordem(a);
+                            break;
+                        case 4:
+                            printf("\nvoltando pro menu\n");
+                            break;
+                    }
             }
+                break;
+            case 3:
+                printf("\nQual valor deseja verificar se existe ?");
+                int x;
+                scanf("%d",&x);
+                existe(a,x);
+                if(existe(a,x) == 1)
+                    printf("\nO numero existe!\n");
+                else
+                    printf("\nO numero nao existe ..........\n");
+                break;
+            case 4:
+                printf("O total da arvore e de %d elementos",contar(a));
+                break;
+            case 5:
+                imprimir_folhas(a);
+                break;
+            case 6:
+                printf("\nSaindo do programa");
+                break;
         }
     }
-}
-
-int cheia2(Arvore*a){
-    if(a == NULL)
-        return 1;   // arvore vazia = arvore cheia
-    if(a -> esquerda == NULL && a -> direita == NULL)
-        return 1;   // se o nó é folha, entao é valido
-    if(a -> esquerda != NULL && a->direita != NULL)
-        return cheia2(a->esquerda) && cheia2(a->direita);
-
-    return 0;   // entra no caso se dele ter apenas um filho
-}
-
-Arvore *Destruir (Arvore*a){
-    if(a!=NULL){
-        a->esquerda = Destruir(a->esquerda);
-        a->direita = Destruir(a->direita);
-        free(a);
-    }
-    return NULL;
-}
-
-void imprimirlargura(Arvore *a){
-    if(a!= NULL){
-        int i;
-        int h = altura(a);
-        for(i = 0; i < h; i++){
-            ImprimirNivel(a,0,i);
-            printf("\n");
-        }
-    }
+    return 0;
 }
