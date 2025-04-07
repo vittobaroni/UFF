@@ -191,6 +191,7 @@ int main()
                 break;
             case 6:
                 printf("\nSaindo do programa");
+                free(a);
                 break;
         }
     }
