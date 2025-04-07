@@ -106,11 +106,12 @@ int contar(arvore*a)
 
 void imprimir_folhas(arvore *a)
 {
-    while(a!=NULL){   // uma arvore vazia é considerado uma folha ?
+    if(a!=NULL){   // uma arvore vazia é considerado uma folha ?
         if(a->esquerda == NULL && a->direita == NULL)
             printf("%d ", a->info);
     }
-    return imprimir_folhas(a->direita) || imprimir_folhas(a->esquerda);
+    imprimir_folhas(a->direita);
+    imprimir_folhas(a->esquerda);
 }
 
 int main()
