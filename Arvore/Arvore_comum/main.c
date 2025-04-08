@@ -4,12 +4,20 @@
 2- Imprimir a árvore (pré-ordem, em-ordem, pós-ordem)
 3- Verificar se um elemento x existe na árvore
 4- Contar o número de elementos na árvore
-5- Imprimir os nós folhas da árvore
+5- Imprimir os nós folhas da árvore --> corrigido
 6- Sair
+
+
+
+VERSAO ATUALIZADA : Adicionar a impressão em largura    --> feito (pedir correção)
+                    Verificar se a árvore está balanceada   --> feito
+                    Verificar se uma árvore é cheia     --> feito
+                    imprimir o nível de um nó x --> pedir ajuda
 */
-#include <locale.h>
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 //estrutura da árvore
 
@@ -73,7 +81,65 @@ arvore *LerArvore(FILE*arq)
     }
  }
 
+// calculo da altura, para ajudar nas outras funções
 
+int altura(arvore*a)
+{
+    if(a == NULL)
+        return 0;
+    else{
+        int he = altura(a->esquerda);
+        int hd = altura(a->direita);
+        if(he > hd)
+            return he + 1;
+        else
+            return hd + 1;
+    }
+}
+
+//imprimindo por nivel
+
+void imprimir_nivel(arvore*a, int cont, int nivel)
+{
+    if(a != NULL){
+        if(cont == nivel)
+            printf("%d",a->info);
+        else{
+            imprimir_nivel(a->esquerda,cont + 1,nivel);
+            imprimir_nivel(a->direita,cont + 1, nivel);
+        }
+    }
+}
+
+//imprimir nivel do nó x
+
+int imprimir_nivel_no(arvore*a,int x)
+{
+    if(a == NULL)
+        return -1 ;
+    else{
+        if(a->info == x)
+            return 0;
+        else{
+        }
+    }
+}
+
+
+
+
+
+
+
+//imprimir por largura
+
+void imprimir_largura(arvore*a)
+{
+    if(a != NULL){
+        for(int i = 0; i <= altura(a); i++)
+            imprimir_nivel(a,0,i)
+    }
+}
 
 // verificar se um elemento x existe na lista
 
@@ -90,6 +156,36 @@ int existe(arvore *a, int x)
             return existe(a->esquerda,x) || existe(a->direita, x);
         }
     }
+}
+
+// vendo se a arvore é balanceada
+
+int balanceada(arvore*a){
+    if(a == NULL)
+        return 1;
+    else{
+        int he = altura(a->esquerda);
+        int hd = altura(a->direita);
+        if(he - hd > 1 || hd - hd > 1)
+            return 0;
+        else
+            return 1;
+    }
+}
+
+
+//verificar se a arvore esta cheia
+
+int cheia(arvore*a)
+{
+    if(a == NULL)
+        return 1;
+    else
+        int h = altura(a);
+        if(contar(a) == pow(2,h) - 1 )
+            return 1;
+        else
+            return 0;
 }
 
 //contar o numero de elementos na arvore
