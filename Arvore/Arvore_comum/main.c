@@ -77,7 +77,7 @@ arvore *LerArvore(FILE*arq)
     if(a!=NULL){
         posordem(a->esquerda);
         posordem(a->direita);
-        printf("%d",a->info);
+        printf("%d ",a->info);
     }
  }
 
@@ -102,9 +102,9 @@ int altura(arvore*a)
 void imprimir_nivel(arvore*a, int cont, int nivel)
 {
     if(a != NULL){
-        if(cont == nivel)
-            printf("%d",a->info);
-        else{
+        if(cont == nivel){
+            printf("%d ",a->info);
+        }else{
             imprimir_nivel(a->esquerda,cont + 1,nivel);
             imprimir_nivel(a->direita,cont + 1, nivel);
         }
@@ -126,18 +126,15 @@ int imprimir_nivel_no(arvore*a,int x)
 }
 
 
-
-
-
-
-
 //imprimir por largura
 
 void imprimir_largura(arvore*a)
 {
     if(a != NULL){
-        for(int i = 0; i <= altura(a); i++)
-            imprimir_nivel(a,0,i)
+        for(int i = 0; i <= altura(a); i++){
+            imprimir_nivel(a,0,i);
+            printf("\n");
+        }
     }
 }
 
@@ -173,21 +170,6 @@ int balanceada(arvore*a){
     }
 }
 
-
-//verificar se a arvore esta cheia
-
-int cheia(arvore*a)
-{
-    if(a == NULL)
-        return 1;
-    else
-        int h = altura(a);
-        if(contar(a) == pow(2,h) - 1 )
-            return 1;
-        else
-            return 0;
-}
-
 //contar o numero de elementos na arvore
 
 int contar(arvore*a)
@@ -200,6 +182,36 @@ int contar(arvore*a)
     }
 }
 
+
+
+// função de potencia, ja que o math.h nao ta funcionando
+
+int potencia(int base, int expoente)
+{
+    int aux = 1;
+    for(int i = 1; i <= expoente;i++)
+        aux = aux * base;
+    return aux;
+}
+
+//verificar se a arvore esta cheia
+
+
+int cheia(arvore*a)
+{
+    int h;
+    if(a == NULL)
+        return 1;
+    else{
+        h = altura(a);
+        if(contar(a) == potencia(2,h)-1)
+            return 1;
+        else
+            return 0;
+    }
+}
+
+
 void imprimir_folhas(arvore *a)
 {
     if(a!=NULL){   // uma arvore vazia é considerado uma folha ?
@@ -210,26 +222,47 @@ void imprimir_folhas(arvore *a)
     imprimir_folhas(a->esquerda);
 }
 
+// função para desalocar memória da árvore
+
+arvore* desalocar(arvore*a)
+{
+    if(a != NULL){
+        desalocar(a->esquerda);
+        desalocar(a->direita);
+        free(a);
+        return NULL;
+    }
+    return a;
+}
+
+// menu principal 
+
+
 int main()
 {
     int escolha;
     int escolha_ordem;
     arvore *a = NULL;
+    FILE *arq = fopen("arq.txt", "rt");
 
-    while(escolha!=6)
+    while(escolha!=9)
     {
         printf("\nBem vindo ao Menu . Qual opcao deseja escolher ?\n\n");
         printf("1- Ler uma arvore de um arquivo fornecido pelo usuario\n");
-        printf("2- Imprimir arvore (pre-ordem, em-ordem, pos-ordem)\n");
+        printf("2- Imprimir arvore (pre-ordem, em-ordem, pos-ordem, em largura)\n");
         printf("3- Verificar se um elemento x existe na arvore\n");
         printf("4- Contar o numero de elementos na arvore\n");
         printf("5- Imprimir os nos folhas da arvore\n");
-        printf("6- Sair\n\n");
+        printf("6- Verificar se uma arvore esta balanceada\n");
+        printf("7- Verificar se uma arvore e cheia\n");
+        printf("8- Imprimir o nivel de um no x\n");
+        printf("9- Sair\n\n");
+        escolha = 0;
         scanf("\n%d",&escolha);
         switch(escolha){
 
-            case 1: {
-                FILE *arq = fopen("arq.txt", "rt");
+            case 1: 
+                
                 if (arq == NULL) {
                     printf("Erro ao abrir o arquivo.\n");
                 } else {
@@ -242,14 +275,16 @@ int main()
                     }
                 }
                 break;
-            }
+            
             case 2:
-                while(escolha_ordem != 4){
-                printf("como deseja fazer?\n\n");
-                printf("1- pre-ordem\n");
-                printf("2- em-ordem\n");
-                printf("3- pos-ordem\n");
-                printf("4- voltar ao menu\n\n");
+                escolha_ordem = 0;
+                while(escolha_ordem != 5){
+                printf("\nComo deseja fazer?\n\n");
+                printf("1- Pre-ordem\n");
+                printf("2- Em-ordem\n");
+                printf("3- Pos-ordem\n");
+                printf("4- Em largura\n");
+                printf("5- Sair\n\n");
                 scanf("%d",&escolha_ordem);
                     switch(escolha_ordem){
                         case 1:
@@ -265,10 +300,14 @@ int main()
                             posordem(a);
                             break;
                         case 4:
-                            printf("\nvoltando pro menu\n");
+                            printf("Largura: \n\n");
+                            imprimir_largura(a);
+                            break;
+                        case 5:
+                            printf("\nVoltando ao menu\n");
                             break;
                     }
-            }
+                }
                 break;
             case 3:
                 printf("\nQual valor deseja verificar se existe ?");
@@ -281,16 +320,28 @@ int main()
                     printf("\nO numero nao existe ..........\n");
                 break;
             case 4:
-                printf("O total da arvore e de %d elementos",contar(a));
+                printf("O total da arvore e de %d elementos\n\n",contar(a));
                 break;
             case 5:
                 imprimir_folhas(a);
                 break;
             case 6:
-                printf("\nSaindo do programa");
-                free(a);
+                balanceada(a);
+                if(balanceada(a) == 1)
+                    printf("A arvore esta balanceada !!!\n");
+                else
+                    printf("A arvore esta desbalanceada ......\n");
                 break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+            default:
+                printf("Numero invalido, tente de novo\n\n");
         }
     }
+    desalocar(a);
     return 0;
 }
