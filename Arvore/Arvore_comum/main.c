@@ -1,15 +1,15 @@
 /* Implemente um programa que apresente na telaw o seguinte menu de opções
 
-1- Ler uma árvore de um arquivo fornecido pelo usuário
-2- Imprimir a árvore (pré-ordem, em-ordem, pós-ordem)
-3- Verificar se um elemento x existe na árvore
-4- Contar o número de elementos na árvore
-5- Imprimir os nós folhas da árvore --> corrigido
+1- Ler uma árvore de um arquivo fornecido pelo usuário  --> feito
+2- Imprimir a árvore (pré-ordem, em-ordem, pós-ordem)   --> feito
+3- Verificar se um elemento x existe na árvore --> feito
+4- Contar o número de elementos na árvore --> feito
+5- Imprimir os nós folhas da árvore --> feito
 6- Sair
 
 
 
-VERSAO ATUALIZADA : Adicionar a impressão em largura    --> feito (pedir correção)
+VERSAO ATUALIZADA : Adicionar a impressão em largura    --> feito 
                     Verificar se a árvore está balanceada   --> feito
                     Verificar se uma árvore é cheia     --> feito
                     imprimir o nível de um nó x --> pedir ajuda
@@ -17,7 +17,8 @@ VERSAO ATUALIZADA : Adicionar a impressão em largura    --> feito (pedir corre�
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <math.h>   // math.h está dando problema na função POW, então criei uma função para
+                    // simbolizar a potencia
 
 //estrutura da árvore
 
@@ -113,14 +114,15 @@ void imprimir_nivel(arvore*a, int cont, int nivel)
 
 //imprimir nivel do nó x
 
-int imprimir_nivel_no(arvore*a,int x)
+int imprimir_nivel_no(arvore*a,int x, int cont)
 {
     if(a == NULL)
         return -1 ;
     else{
         if(a->info == x)
-            return 0;
+            return cont;
         else{
+            return imprimir_nivel_no(a->esquerda, x, cont + 1) > imprimir_nivel_no(a->direita, x, cont + 1) ? imprimir_nivel_no(a->esquerda, x, cont + 1) : imprimir_nivel_no(a->direita,x, cont + 1);
         }
     }
 }
@@ -163,11 +165,14 @@ int balanceada(arvore*a){
     else{
         int he = altura(a->esquerda);
         int hd = altura(a->direita);
-        if(he - hd > 1 || hd - hd > 1)
+        if(he - hd > 1 || hd - he > 1)
             return 0;
-        else
-            return 1;
+        else {
+            if(!balanceada(a->esquerda) || !balanceada(a->direita))
+              return 0;  
+        }
     }
+    return 1;
 }
 
 //contar o numero de elementos na arvore
@@ -217,9 +222,11 @@ void imprimir_folhas(arvore *a)
     if(a!=NULL){   // uma arvore vazia é considerado uma folha ?
         if(a->esquerda == NULL && a->direita == NULL)
             printf("%d ", a->info);
-    }
-    imprimir_folhas(a->direita);
-    imprimir_folhas(a->esquerda);
+        else{
+            imprimir_folhas(a->direita);
+            imprimir_folhas(a->esquerda);
+        }
+    }    
 }
 
 // função para desalocar memória da árvore
@@ -247,7 +254,7 @@ int main()
 
     while(escolha!=9)
     {
-        printf("\nBem vindo ao Menu . Qual opcao deseja escolher ?\n\n");
+        printf("\nBem vindo ao Menu . Qual opcao deseja escolher ?( leia a arvore primeiro )\n\n");
         printf("1- Ler uma arvore de um arquivo fornecido pelo usuario\n");
         printf("2- Imprimir arvore (pre-ordem, em-ordem, pos-ordem, em largura)\n");
         printf("3- Verificar se um elemento x existe na arvore\n");
@@ -306,6 +313,9 @@ int main()
                         case 5:
                             printf("\nVoltando ao menu\n");
                             break;
+                        default:
+                            printf("\n numero invalido, tente outro ");
+                            break;   
                     }
                 }
                 break;
@@ -325,18 +335,30 @@ int main()
             case 5:
                 imprimir_folhas(a);
                 break;
-            case 6:
+            case 6: // balanceada
                 balanceada(a);
                 if(balanceada(a) == 1)
                     printf("A arvore esta balanceada !!!\n");
                 else
                     printf("A arvore esta desbalanceada ......\n");
                 break;
-            case 7:
+            case 7: // se é cheia ou nao
+                if(cheia(a) == 1)
+                    printf("a arvore esta cheia !");
+                else
+                    printf("a arvore nao esta cheia");
                 break;
-            case 8:
+            case 8: // imprimir nivel de um nó x
+                printf("Qual no quer saber o nivel ? ");
+                int no = 0;
+                scanf("%d",&no);
+                if(imprimir_nivel_no(a, no, 0) == -1)
+                    printf("Nao existe este no na arvore, tente outro");
+                else
+                    printf("o nivel do no %d e %d", no, imprimir_nivel_no(a,no, 0));
                 break;
-            case 9:
+            case 9: // sair
+                printf("Saindo do programa");
                 break;
             default:
                 printf("Numero invalido, tente de novo\n\n");
