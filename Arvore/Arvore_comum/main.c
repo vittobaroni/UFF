@@ -254,7 +254,7 @@ int main()
 
     while(escolha!=9)
     {
-        printf("\nBem vindo ao Menu . Qual opcao deseja escolher ?( leia a arvore primeiro )\n\n");
+        printf("\nBem vindo ao Menu . Qual opcao deseja escolher ? ( leia a arvore primeiro )\n\n");
         printf("1- Ler uma arvore de um arquivo fornecido pelo usuario\n");
         printf("2- Imprimir arvore (pre-ordem, em-ordem, pos-ordem, em largura)\n");
         printf("3- Verificar se um elemento x existe na arvore\n");
