@@ -2,12 +2,17 @@
 
 1 - Ler uma árvore de um arquivo fornecido pelo usuário --> feito
 2 - Imprimir a árvore (Pré-ordem, Em-Ordem, Pós-ordem, em largura)--> feito
-3 - Verificar se um elemento x existe na árvore --> feito
+3 - Verificar se um elemento x existe na árvore --> feito ( corrigir)
 4 - Imprimir o nível de um nó x --> feito
-5 - Imprimir as folhas menores que um valor x  --> feito
+5 - Imprimir as folhas menores que um valor x  --> feito ( corrigir depois )
 6 - Inserir um nó x na árvore --> feito
 7 - Remover um nó x da árvore --> feito
 8 - Sair --> feito
+
+Pedir ajuda para o monitor sobre o 3 e o 5
+
+a 3 não reconhece o último nível da árvore e a 5 não imprime nada
+
 
 
 OBSERVAÇÃO : FALTA IMPLEMENTAR NA MAIN A MAIORIA
@@ -141,24 +146,27 @@ int existe(arvore *a, int x)    // necessario tirar proveito da ordenação
         if(a->info == x)
             return 1;
         else if(x < a->info)
-            existe(a->esquerda,x);
+           return existe(a->esquerda,x);
         else
-            existe(a->direita,x);
+           return existe(a->direita,x);
     }
 }
 
-void folhas(arvore*a, int x)    // imprimir folhas menores que x
+void folhas(arvore* a, int x)
 {
-    if(a!= NULL){
-        if(a->esquerda == NULL && a->direita == NULL){
-            if(a->info < x)
-                printf("%d ",a->info);
-            else
-                folhas(a->esquerda, x);
-                folhas(a->direita, x);
+    if (a != NULL) {
+        if (a->esquerda == NULL && a->direita == NULL) {
+            // é folha
+            if (a->info < x)
+                printf("%d ", a->info);
+        } else {
+            // não é folha, continua a busca
+            folhas(a->esquerda, x);
+            folhas(a->direita, x);
         }
     }
 }
+
 
 arvore* inserir(arvore*a, int x)
 {
@@ -219,6 +227,20 @@ arvore* remover(arvore* a, int x) {
 }
 
 
+// desalocar memoria da arvore
+
+arvore* desalocar(arvore*a)
+{
+    if(a!= NULL){
+        desalocar(a->esquerda);
+        desalocar(a->direita);
+        free(a);
+        return NULL;
+    }
+    return a;
+}
+
+
 // criação da main
  
 int main()
@@ -257,26 +279,34 @@ int main()
             }
                 break;
             case 2: // imprimir a arvore
+                escolha_ordem = 0;
                 while(escolha_ordem != 5){
-
                     printf("Qual metodo deseja imprimir a arvore?\n\n");
                     printf("1- Pre-ordem\n");
                     printf("2- Em-ordem\n");
                     printf("3- Pos-ordem\n");
                     printf("4- Em largura\n");
                     printf("5- Voltar ao menu\n\n");
-                    escolha_ordem = 0;
                     scanf("%d",&escolha_ordem);
                     switch(escolha_ordem){
                         case 1: // pre ordem
+                            printf("Pre-ordem: ");
+                            preordem(a);
                             break;
                         case 2 :    // em ordem
+                            printf("Em-ordem: ");
+                            emordem(a);
                             break;
                         case 3: // pos ordem
+                            printf("Pos-ordem: ");
+                            posordem(a);
                             break;
                         case 4: // em largura
+                            printf("Em largura: \n");
+                            imprimir_largura(a);
                             break;
                         case 5: // voltar ao menu
+                            printf("\n Voltando ao menu\n");
                             break;
                         default:    // numero invalido
                             printf("Opcao invalida . Tente novamente");
@@ -284,25 +314,51 @@ int main()
                     }
                 }
                 break;
-            case 3: // verificar se um elemento x existe na arvore
+            case 3:{ // verificar se um elemento x existe na arvore
                 printf("\n\n Qual numero quer verificar ? ");
                 int num;
                 scanf("%d",&num);
+                existe(a,num);
+                if(existe(a,num) == 1)
+                    printf("O numero existe !!\n");
+                else
+                    printf("O numero nao existe .....\n");
                 break;
-            case 4: // imprimir o nivel de um no x
+            }
+            case 4:{ // imprimir o nivel de um no x
+                printf("Qual no quer saber o nivel ? ");
+                int no = 0;
+                scanf("%d",&no);
+                imprimir_nivel_no(a,no,0);
+                if(imprimir_nivel_no(a,no,0) == -1)
+                    printf("O numero nao existe na arvore .......");
+                else
+                    printf("O nivel do no %d e %d",no,imprimir_nivel_no(a,no,0));
                 break;
-            case 5: // imprimir folhas menores que um valor x
+            }
+            case 5:{ // imprimir folhas menores que um valor x
+                printf("Qual o valor que quer saber ? ");
+                int x ;
+                scanf("%d",&x);
+                folhas(a,x);
                 break;
-            case 6: // inserir um no x na arvore
+            }
+            case 6:{ // inserir um no x na arvore
                 printf("Qual numero quer inserir ? ");
-                int inserir;
-                scanf("%d",&inserir);
+                int ins;
+                scanf("%d",&ins);
+                inserir(a,ins);
+                printf("%d adicionado na arvore",ins);
                 break;
-            case 7: // remover um no x da arvore
+            }
+            case 7:{ // remover um no x da arvore
                 printf("Qual numero quer remover ?");
-                int remover;
-                scanf("%d",&remover);
+                int rmv;
+                scanf("%d",&rmv);
+                remover(a,rmv);
+                printf("%d removido da arvore",rmv);
                 break;
+            }
             case 8: // sair do programa
                 printf("Saindo do menu");
                 break;
@@ -311,4 +367,6 @@ int main()
                 break;
         }
     }
+    desalocar(a);
+    return 0;
 }
