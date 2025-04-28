@@ -2,16 +2,16 @@
 
 1 - Ler uma árvore de um arquivo fornecido pelo usuário --> feito
 2 - Imprimir a árvore (Pré-ordem, Em-Ordem, Pós-ordem, em largura)--> feito
-3 - Verificar se um elemento x existe na árvore --> feito ( corrigir)
+3 - Verificar se um elemento x existe na árvore --> feito 
 4 - Imprimir o nível de um nó x --> feito
-5 - Imprimir as folhas menores que um valor x  --> feito ( corrigir depois )
-6 - Inserir um nó x na árvore --> feito
-7 - Remover um nó x da árvore --> feito
+5 - Imprimir as folhas menores que um valor x  --> feito 
+6 - Inserir um nó x na árvore --> corrigir
+7 - Remover um nó x da árvore --> corrigir
 8 - Sair --> feito
 
-Pedir ajuda para o monitor sobre o 3 e o 5
+Pedir ajuda para o monitor sobre 6 e 7
 
-a 3 não reconhece o último nível da árvore e a 5 não imprime nada
+acontece a inserção / remoção , mas adiciona é como se adicionasse em uma nova variavel
 
 
 
