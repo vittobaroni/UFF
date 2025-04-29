@@ -181,6 +181,7 @@ arvore* inserir(arvore*a, int x)
     } else{
         a->direita = inserir(a->direita,x);
     }
+    return a
 }
 
 arvore* remover(arvore* a, int x) {
