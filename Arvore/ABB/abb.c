@@ -1,21 +1,14 @@
 /* QUESTÕES PEDIDAS :
 
-1 - Ler uma árvore de um arquivo fornecido pelo usuário --> feito
-2 - Imprimir a árvore (Pré-ordem, Em-Ordem, Pós-ordem, em largura)--> feito
-3 - Verificar se um elemento x existe na árvore --> feito 
-4 - Imprimir o nível de um nó x --> feito
-5 - Imprimir as folhas menores que um valor x  --> feito 
-6 - Inserir um nó x na árvore --> corrigir
-7 - Remover um nó x da árvore --> corrigir
-8 - Sair --> feito
+1 - Ler uma árvore de um arquivo fornecido pelo usuário 
+2 - Imprimir a árvore (Pré-ordem, Em-Ordem, Pós-ordem, em largura )
+3 - Verificar se um elemento x existe na árvore 
+4 - Imprimir o nível de um nó x 
+5 - Imprimir as folhas menores que um valor x  
+6 - Inserir um nó x na árvore 
+7 - Remover um nó x da árvore
+8 - Sair 
 
-Pedir ajuda para o monitor sobre 6 e 7
-
-acontece a inserção / remoção , mas adiciona é como se adicionasse em uma nova variavel
-
-
-
-OBSERVAÇÃO : FALTA IMPLEMENTAR NA MAIN A MAIORIA
 */
 
 
